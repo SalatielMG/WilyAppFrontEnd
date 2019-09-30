@@ -1,0 +1,18 @@
+.ios,.md {
+  page-abonos {
+    ion-header{
+      @include linear-gradient(left,$facebook-messenger);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+    }
+
+  ion-content {
+    @include linear-gradient(top,$facebook-messenger);//(top,$blue-skies);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+  }
+
+  }
+}

@@ -1,0 +1,73 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title class="medidaTitulo" style="padding-right: 40px; padding-left: 40px">Detalles del Cliente</ion-title>
+  </ion-navbar>
+
+</ion-header>
+<ion-content parallax>
+  <div class="bg">
+
+  </div>
+  <div class="main-cnt" padding>
+    <img *ngIf="cliente.sexo==1" src="assets/imgs/H.png" class="dp"/>
+    <img *ngIf="cliente.sexo==0" src="assets/imgs/M.png" class="dp"/>
+
+
+      <p text-center><strong>{{cliente.nombreCliente}}</strong></p>
+
+      <ion-list no-lines>
+        <ion-item-divider class="tran-item-divider" style="background-color: transparent; font-weight: bold">
+          INFORMACIÓN PERSONAL
+        </ion-item-divider>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="person" item-start></ion-icon>
+          <ion-label stacked>Sexo:</ion-label>
+          <ion-input type="text" readonly="true" [value]="sexo" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="locate" item-start></ion-icon>
+          <ion-label stacked>Dirección:</ion-label>
+          <ion-input type="text" readonly="true" [value]="cliente.direccion" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="call" item-start></ion-icon>
+          <ion-label stacked>Telefono:</ion-label>
+          <ion-input type="text" readonly="true" [value]="cliente.telefono" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <!--ion-list-header no-lines style="background-color: transparent;">
+          <strong>Prestamos Generales</strong>
+        </ion-list-header>
+        <ion-item>
+          <ion-icon name="cash" item-start></ion-icon>
+          <strong>Total dinero prestado: </strong>{{1550000|currency}}
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="archive" item-start></ion-icon>
+          <strong>Núm. prestamos activos: </strong>15
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="archive" item-start></ion-icon>
+          <strong>Núm. prestamos cerrados: </strong>560
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item-->
+      </ion-list>
+    <br>
+    <br>
+      <button ion-button block icon-left  color="primary" [navPush]="prestamosClte" [navParams]="{all: false, cliente: cliente}">
+        <ion-icon name="cash"></ion-icon>
+        Ver Prestamos
+      </button>
+
+  </div>
+
+</ion-content>

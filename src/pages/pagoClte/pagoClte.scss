@@ -1,0 +1,23 @@
+.ios, .md{
+  page-pago-clte {
+    .card-pago{
+      margin: 0px;
+      width: 100%;
+      margin-bottom: 1px;
+    }
+    .header-tarjetaPago{
+      padding: 0px;
+    }
+    .center-verticalmente{
+      justify-content: center;
+      align-items: center;
+    }
+    .item.item-block .item-inner{
+      padding-right: 0px;
+    }
+    .item ion-icon[item-left] + .item-inner, .item ion-icon[item-left] + .item-input, .item ion-icon[item-start] + .item-inner, .item ion-icon[item-start] + .item-input {
+      margin-left: 5px;
+    }
+  }
+}
+

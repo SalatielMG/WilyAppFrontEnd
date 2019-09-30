@@ -1,0 +1,75 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{titulo}} Cliente</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">Cerrar</button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+  <expandable-header [scrollArea]="myContent" headerHeight="200">
+    <div class="bg-img-cliente">
+      <img *ngIf="clienteProvider.sexo==1" src="assets/imgs/H.png" class="dp-img"/>
+      <img *ngIf="clienteProvider.sexo==0" src="assets/imgs/M.png" class="dp-img"/>
+    </div>
+  </expandable-header>
+
+</ion-header>
+
+<ion-content fullscreen #myContent padding >
+  <form [formGroup]="myForm" (ngSubmit)="saveData()">
+    <ion-list >
+      <ion-list-header no-lines >
+        Nombre Completo
+      </ion-list-header>
+      <ion-item>
+        <ion-icon name="person" item-start></ion-icon>
+        <ion-label floating>Nombre:</ion-label>
+        <ion-input formControlName="nombre" type="text"  ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="information-circle" item-start></ion-icon>
+        <ion-label floating>Apellidos:</ion-label>
+        <ion-input formControlName="apellidos" type="text" ></ion-input>
+      </ion-item>
+
+      <ion-list-header no-lines>
+        Información personal
+      </ion-list-header>
+
+      <div radio-group  (ionChange)="cambioSexo($event)">
+        <ion-item>
+          <ion-icon name="man" item-start></ion-icon>
+          <ion-label>Masculino</ion-label>
+          <ion-radio value="1" [checked]="sexo"></ion-radio>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="woman" item-start></ion-icon>
+          <ion-label>Femenino</ion-label>
+          <ion-radio value="0" [checked]="!sexo"></ion-radio>
+        </ion-item>
+      </div>
+
+      <ion-list-header no-lines >
+        Otros datos
+      </ion-list-header>
+      <ion-item>
+        <ion-icon name="locate" item-start></ion-icon>
+        <ion-label floating>Direccion:</ion-label>
+        <ion-input formControlName="direccion" type="text" ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="call" item-start></ion-icon>
+        <ion-label floating>Telefono:</ion-label>
+        <ion-input formControlName="telefono"  type="number" ></ion-input>
+      </ion-item>
+      <ion-list-header no-lines >
+      </ion-list-header>
+    </ion-list >
+    <div padding>
+      <button ion-button block type="submit" color="secondary" [disabled]="!myForm.valid">{{btnSubmit}} </button>
+    </div>
+  </form>
+</ion-content>

@@ -1,0 +1,36 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Agregar Bien</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">Cerrar</button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <form [formGroup]="myForm" (ngSubmit)="saveData()">
+
+    <ion-list>
+      <ion-item>
+        <ion-icon name="archive" item-start></ion-icon>
+        <ion-label floating>Nombre:</ion-label>
+        <ion-input formControlName="nombre" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="analytics" item-start></ion-icon>
+        <ion-label floating>Tipo:</ion-label>
+        <ion-select formControlName="tipo">
+          <ion-option value="1" ><strong>Mueble</strong></ion-option>
+          <ion-option value="0" ><strong>Inmueble</strong></ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <div padding>
+      <button ion-button block type="submit" color="secondary" [disabled]="!myForm.valid">Agregar</button>
+    </div>
+  </form>
+</ion-content>

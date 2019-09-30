@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-navbar  no-border>
+    <ion-buttons start>
+      <button ion-button *ngIf="usProvider.activo()" (click)="usProvider.cerrar_sesion()">
+        Salir
+      </button>
+    </ion-buttons>
+    <ion-title >Mis clientes</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only color="secondary" (click)="abrirClienteModal({ client : this.clienteProvider.idClientes[0], opcion: 2 })" *ngIf="clienteProvider.idClientes.length==1">
+        <ion-icon name="create"></ion-icon>
+        <ion-badge color="secondary" *ngIf="clienteProvider.idClientes.length==1">
+          1
+        </ion-badge>
+      </button>
+      <button ion-button icon-only color="danger" (click)="eliminarCliente()" *ngIf="clienteProvider.idClientes.length>0">
+        <ion-icon name="trash"></ion-icon>
+        <ion-badge color="danger" *ngIf="clienteProvider.idClientes.length>0" >
+          {{clienteProvider.idClientes.length}}
+        </ion-badge>
+      </button>
+    </ion-buttons>
+  </ion-navbar >
+  <ion-toolbar>
+    <ion-searchbar placeholder="Busca tus clientes" showCancelButton color="danger"  (keyup.enter)="buscarCliente($event)" (ionCancel)="deleteSearch()"  animated="true"></ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content class="card-background-page" padding>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)" (ionPull)="doPulling($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Jale para Actualizar..."
+      refreshingSpinner="circles"
+      refreshingText="Actualizando lista de clientes">
+    </ion-refresher-content>
+  </ion-refresher>
+
+   <ion-grid >
+    <ion-row *ngFor="let cliente of clienteProvider.clientes; let row=index">
+      <ion-col *ngFor="let c of cliente;let col=index" col-6 no-padding >
+        <div #palomita [id]="c.id" class="ocultar">
+          <ion-fab right top >
+            <button ion-fab color="danger" class="fab-map" (click)="seleccionarCliente(c, row, col) ">
+              <ion-icon name='checkmark' ></ion-icon>
+            </button>
+          </ion-fab>
+        </div>
+
+        <ion-card #tarjeta [id]="c.id" class="rodondo" [navParams]="{client:c, opcion: 1}"
+                  [navPush]="clientPage" (press)="seleccionarCliente(c, row, col) ">
+
+          <img *ngIf="c.sexo==1" src="assets/imgs/H.png" />
+          <img *ngIf="c.sexo==0" src="assets/imgs/M.png" />
+          <div class="opacity">
+            <div class="card-title">{{c.nombreCliente}}</div>
+          </div>
+
+        </ion-card>
+        <button ion-button icon-start  [navPush]="prestamosClte" [navParams]="{all: false, cliente: c}" class="centrado" color="primary" >
+          <ion-icon name="cash"></ion-icon>
+          Prestamos
+        </button>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+  <ion-card class="tarjeta" style="margin: 0px; width: 100%" *ngIf="clienteProvider.clientes.length == 0" no-padding>
+
+    <ion-card-content >
+      <ion-item class="transparentar">
+        <br>
+        <p class="nombreCliente" text-wrap text-center>¡ {{clienteProvider.msjCliente}} !</p>
+      </ion-item>
+
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-infinite-scroll (ionInfinite)="siguiente_pagina($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  <ion-fab right bottom (click)="agregarClienteModal()"  >
+    <button ion-fab color="blue-strong"><ion-icon name="add"  ></ion-icon></button>
+
+  </ion-fab>
+</ion-content>

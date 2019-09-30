@@ -1,0 +1,9 @@
+<ion-tabs selectedIndex="0" *ngIf="!usProvider.activo()" >
+  <ion-tab [root]="tabLogin" tabTitle="Home" tabIcon="home" ></ion-tab>
+</ion-tabs >
+<ion-tabs selectedIndex="1" *ngIf="usProvider.activo()" >
+  <ion-tab [root]="tabPapelera" tabsHideOnSubPages="true" tabTitle="Papelera" tabIcon="information-circle" tabBadgeStyle="danger"></ion-tab>
+  <ion-tab [root]="tabCliente" tabsHideOnSubPages="true" tabTitle="Clientes" tabIcon="home" [tabBadge]="clientProvider.numCliente" tabBadgeStyle="danger"></ion-tab>
+  <ion-tab [root]="tabPrestamoActivos" [rootParams]="{all: true, bnd : true, msj: 'Hola llamada desde tabPrestamoActivos ' }"  tabTitle="Prestamos" tabIcon="cash"  tabBadgeStyle="danger"></ion-tab>
+</ion-tabs>
+

@@ -1,0 +1,29 @@
+.ios,.md {
+  page-pago-abono {
+    ion-header{
+      @include linear-gradient(left,$facebook-messenger);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+    }
+
+    ion-content {
+      @include linear-gradient(top,$facebook-messenger);//(top,$blue-skies);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+    }
+
+    .item ion-icon[item-left] + .item-inner, .item ion-icon[item-left] + .item-input, .item ion-icon[item-start] + .item-inner, .item ion-icon[item-start] + .item-input {
+      margin-left: 5px;
+    }
+
+    .text-input{
+      margin-right: 0px;
+      margin-left: 0px;
+      padding: 0;
+      width: 100%;
+    }
+
+  }
+}

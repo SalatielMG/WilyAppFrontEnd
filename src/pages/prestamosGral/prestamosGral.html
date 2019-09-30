@@ -1,0 +1,163 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="medidaTitulo">
+      Prestamos Generales
+    </ion-title>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top >
+    <ion-segment [(ngModel)]="prestamoProvider.prestamo">
+      <ion-segment-button value=1>
+        Activos
+      </ion-segment-button>
+      <ion-segment-button value=2>
+        Cerrados
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content >
+
+  <ion-refresher (ionRefresh)="doRefresh($event)" (ionPull)="doPulling($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Jale para Actualizar..."
+      refreshingSpinner="circles"
+      (refreshingText)="prestamoProvider.textoRefrescando">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div [ngSwitch]="prestamoProvider.prestamo">
+
+    <div *ngSwitchCase=1>
+      <acordeonGral>
+      </acordeonGral>
+      <ion-list >
+
+        <ion-item-sliding *ngFor="let prestamo of prestamoProvider.prestamosActivos;let i=index">
+
+          <ion-item [navPush]="pagoPage" [navParams]="{ prestamo: prestamo}">
+            <ion-thumbnail item-start>
+              <img src="assets/imgs/prestamoA.png" />
+            </ion-thumbnail>
+            <ion-row no-padding>
+              <p class="nombreCliente">{{prestamo.nombreCliente}}</p>
+            </ion-row>
+
+            <ion-row no-padding>
+              <ion-col col-6 style="padding-left: 0px">
+                <p class="descripcion"><strong>Capital: </strong>{{prestamo.cantidad | currency}}</p>
+                <p class="descripcion"><strong>Interes: </strong>{{prestamo.porcentaje | percent}}</p>
+                <!--br-->
+                <p class="descripcion" *ngIf="prestamo.esGarantia == 1"><strong>Bien:</strong> {{prestamo.nombreBien}}</p>
+                <p class="descripcion" *ngIf="prestamo.esGarantia == 0"><strong>¡No aplica Garantia!</strong></p>
+              </ion-col>
+              <ion-col col-6 text-right>
+                <ion-icon name="calendar"></ion-icon>
+                <p class="descripcion"><strong>{{prestamo.fecha | date:'dd/MM/yyyy'}}</strong></p>
+                <!--p class="descripcion verde"><strong>{{prestamo.fecha | date:'dd/MM/yyyy'}}</strong></p-->
+              </ion-col>
+              <!--ion-col col-4 text-center>
+                <ion-icon name="calendar" ></ion-icon>
+                <p class="descripcion"><strong>{{prestamo.fecha}}</strong></p>
+              </ion-col-->
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="left">
+            <button ion-button color="danger-light" expandable (click)="borrarPrestamoActivo(i,prestamo)">
+              <ion-icon name="trash"></ion-icon>Cancelar Prestamo</button>
+          </ion-item-options>
+          <ion-item-options side="right">
+            <button ion-button color="secondary" expandable (click)="prestamoProvider.util.abrirModalPrestamo({prestamo : prestamo, opcion: 2, index: i, esGral: true})">
+              <ion-icon name="create"></ion-icon>Editar Prestamo</button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+      <ion-card class="tarjeta" style="margin: 0px; width: 100%" *ngIf="prestamoProvider.prestamosActivos.length == 0" no-padding>
+
+        <ion-card-content >
+          <ion-item class="transparentar">
+            <br>
+            <p class="nombreCliente" text-wrap text-center>¡ {{prestamoProvider.msjGralActivo}} !</p>
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+
+    </div>
+    <div *ngSwitchCase=2>
+      <acordeonGral>
+      </acordeonGral>
+      <ion-list >
+
+        <ion-item-sliding *ngFor="let prestamo of prestamoProvider.prestamosCerrados;let i=index">
+
+          <ion-item [navPush]="pagoPage" [navParams]="{ prestamo: prestamo}">
+            <ion-thumbnail item-start>
+              <img src="assets/imgs/prestamoC.png" />
+
+            </ion-thumbnail>
+            <ion-row no-padding>
+                <p class="nombreCliente" style="color:#00c800">{{prestamo.nombreCliente}}</p>
+            </ion-row>
+            <ion-row no-padding>
+              <ion-col col-6 style="padding-left: 0px">
+                <p class="descripcion"><strong>Capital: </strong>{{prestamo.cantidad | currency}}</p>
+                <p class="descripcion"><strong>Interes: </strong>{{prestamo.porcentaje | percent}}</p>
+                <br>
+                <p class="descripcion" *ngIf="prestamo.esGarantia == 1"><strong>Bien:</strong> {{prestamo.nombreBien}}</p>
+                <p class="descripcion" *ngIf="prestamo.esGarantia == 0"><strong>¡No aplica Garantia!</strong></p>
+              </ion-col>
+              <ion-col col-6 text-right>
+                <ion-icon name="text" color="amarillo" *ngIf="prestamo.razon.length > 0"></ion-icon>
+                <ion-icon name="text" color="blanco-ligth" *ngIf="prestamo.razon.length == 0"></ion-icon>
+                <p class="descripcion rojo"><strong>{{prestamo.fecha | date:'dd/MM/yyyy'}}</strong></p>
+                <p class="descripcion verde"><strong>{{prestamo.fechaCierre | date:'dd/MM/yyyy'}}</strong></p>
+              </ion-col>
+
+            </ion-row>
+          </ion-item>
+
+          <ion-item-options side="left">
+            <button ion-button color="danger-light" expandable (click)="borrarPrestamocerrado(i,prestamo)">
+              <ion-icon name="trash"></ion-icon>
+              Borrar
+            </button>
+          </ion-item-options>
+
+          <ion-item-options side="right">
+            <button ion-button color="secondary" expandable (click)="deshacerCierrePrestamo(prestamo.id)">
+              <ion-icon name="undo"></ion-icon>
+              Deshacer Cierre
+            </button>
+          </ion-item-options>
+
+        </ion-item-sliding>
+
+
+      </ion-list>
+      <ion-card class="tarjeta" style="margin: 0px; width: 100%" *ngIf="prestamoProvider.prestamosCerrados.length == 0" no-padding>
+
+        <ion-card-content >
+          <ion-item class="transparentar">
+            <br>
+            <p class="nombreCliente" text-wrap text-center>¡ {{prestamoProvider.msjGralCerrado}} !</p>
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+  </div>
+  <ion-infinite-scroll (ionInfinite)="siguiente_pagina($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <!--ion-fab right bottom *ngIf="!prestamoProvider.esAll && prestamoProvider.prestamo==1">
+    <button ion-fab color="blue-strong" (click)="abrirModalPrestamo({opcion: 1, cliente:clte})"><ion-icon name="add"></ion-icon></button>
+  </ion-fab-->
+
+</ion-content>

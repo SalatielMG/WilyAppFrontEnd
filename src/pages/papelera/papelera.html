@@ -1,0 +1,185 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Papelera
+    </ion-title>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="papelera" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value=1>
+        Clientes
+      </ion-segment-button>
+      <ion-segment-button value=2>
+        Prestamos
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)" (ionPull)="doPulling($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Jale para Actualizar..."
+      refreshingSpinner="circles"
+      refreshingText="Actualizando datos">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div [ngSwitch]="papelera">
+    <ion-list *ngSwitchCase=1>
+      <ion-item-sliding *ngFor="let cliente of clienteProvider.clientesEliminados;let i=index">
+        <ion-item>
+          <ion-thumbnail item-start>
+            <img *ngIf="cliente.sexo==1" src="assets/imgs/H.png" />
+            <img *ngIf="cliente.sexo==0" src="assets/imgs/M.png" />
+          </ion-thumbnail>
+          <ion-row no-padding>
+            <p class="nombreCliente">{{cliente.nombreCliente}}</p>
+          </ion-row>
+          <ion-row no-padding>
+              <p class="descripcion"><strong>Domicilio:</strong> {{cliente.direccion}}</p>
+              <p class="descripcion"><strong>Telefono:</strong> {{cliente.telefono}}</p>
+          </ion-row>
+        </ion-item>
+        <ion-item-options side="left">
+          <button ion-button color="danger-light" expandable (click)="eliminarPermanentementeCliente(cliente, i)">
+            <ion-icon name="trash"></ion-icon>
+            Borrar Permanentemente
+          </button>
+        </ion-item-options>
+        <ion-item-options side="right">
+          <button ion-button color="secondary" expandable (click)="restaurarCliente(cliente, i)">
+            <ion-icon name="archive"></ion-icon>
+            Restaurar
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+      <ion-card class="tarjeta" style="margin: 0px; width: 100%" *ngIf="clienteProvider.clientesEliminados.length == 0" no-padding>
+
+        <ion-card-content >
+          <ion-item class="transparentar">
+            <br>
+            <p class="nombreCliente" text-wrap text-center>¡ No hay ningun cliente eliminado !</p>
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+
+    <div *ngSwitchCase=2>
+      <ion-toolbar no-border-top>
+        <ion-segment [(ngModel)]="prestamo"  (ionChange)="segmentPrestamos($event)" >
+          <ion-segment-button value=1 >
+            Activos
+          </ion-segment-button>
+          <ion-segment-button value=2>
+            Cerrados
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
+      <div [ngSwitch] = "prestamo">
+        <ion-list *ngSwitchCase = 1>
+          <ion-item-sliding *ngFor="let prest of prestamoProvider.prestamosActivosEliminados;let i = index">
+            <ion-item> <!--[navPush]="prestamoAbonosPage" [navParams]="{ prestamo: prest}" (click)="prueba()"-->
+              <ion-thumbnail item-start>
+                <img src="assets/imgs/prestamoA.png" />
+              </ion-thumbnail>
+              <ion-row no-padding>
+                <p class="nombreCliente">{{prest.nombreCliente}}</p>
+              </ion-row>
+
+              <ion-row no-padding>
+                <ion-col col-6 style="padding-left: 0px">
+                  <p class="descripcion"><strong>Capital: </strong>{{prest.cantidad | currency}}</p>
+                  <p class="descripcion"><strong>Interes: </strong>{{prest.porcentaje | percent}}</p>
+                  <p class="descripcion" *ngIf="prest.esGarantia == 1"><strong>Bien:</strong> {{prest.nombreBien}}</p>
+                  <p class="descripcion" *ngIf="prest.esGarantia == 0"><strong>¡No aplica Garantia!</strong></p>
+                </ion-col>
+                <ion-col col-6 text-right>
+                  <ion-icon name="calendar" ></ion-icon>
+                  <p class="descripcion"><strong>{{prest.fecha | date:'dd/MM/yyyy'}}</strong></p>
+                </ion-col>
+                <!--ion-col col-4 text-center>
+                  <ion-icon name="calendar" ></ion-icon>
+                  <p class="descripcion"><strong>{{prestamo.fecha}}</strong></p>
+                </ion-col-->
+              </ion-row>
+            </ion-item>
+
+            <ion-item-options side="left">
+              <button ion-button color="danger-light" expandable (click)="eliminarPermanentementePrestamo(prest, i)">
+                <ion-icon name="trash"></ion-icon>Eliminar Permanentemente</button>
+            </ion-item-options>
+            <ion-item-options side="right">
+              <button ion-button color="secondary" expandable (click)="restaurarPrestamo(prest, i)">
+                <ion-icon name="undo"></ion-icon>Restaurar</button>
+            </ion-item-options>
+          </ion-item-sliding>
+          <ion-card class="tarjeta" style="margin: 0px; width: 100%" *ngIf="prestamoProvider.prestamosActivosEliminados.length == 0" no-padding>
+
+            <ion-card-content >
+              <ion-item class="transparentar">
+                <br>
+                <p class="nombreCliente" text-wrap text-center>¡ No hay ningun Prestamo Activo Eliminado !</p>
+              </ion-item>
+
+            </ion-card-content>
+          </ion-card>
+        </ion-list>
+        <ion-list *ngSwitchCase=2>
+          <ion-item-sliding *ngFor="let prest of prestamoProvider.prestamosCerradosEliminados;let i = index">
+
+            <ion-item ><!--[navPush]="prestamoAbonosPage" [navParams]="{ prestamo: prestamo}"-->
+              <ion-thumbnail item-start>
+                <img src="assets/imgs/prestamoC.png" />
+              </ion-thumbnail>
+              <ion-row no-padding>
+                <p class="nombreCliente">{{prest.nombreCliente}}</p>
+              </ion-row>
+
+              <ion-row no-padding>
+                <ion-col col-6 style="padding-left: 0px">
+                  <p class="descripcion"><strong>Capital: </strong>{{prest.cantidad | currency}}</p>
+                  <p class="descripcion"><strong>Interes: </strong>{{prest.porcentaje | percent}}</p>
+                  <p class="descripcion" *ngIf="prest.esGarantia == 1"><strong>Bien:</strong> {{prest.nombreBien}}</p>
+                  <p class="descripcion" *ngIf="prest.esGarantia == 0"><strong>¡No aplica Garantia!</strong></p>
+                </ion-col>
+                <ion-col col-6 text-right>
+                  <ion-icon name="calendar" ></ion-icon>
+                  <p class="descripcion"><strong>{{prest.fecha | date:'dd/MM/yyyy'}}</strong></p>
+                </ion-col>
+                <!--ion-col col-4 text-center>
+                  <ion-icon name="calendar" ></ion-icon>
+                  <p class="descripcion"><strong>{{prestamo.fecha}}</strong></p>
+                </ion-col-->
+              </ion-row>
+            </ion-item>
+
+            <ion-item-options side="left">
+              <button ion-button color="danger-light" expandable (click)="eliminarPermanentementePrestamo(prest, i)">
+                <ion-icon name="trash"></ion-icon>Eliminar Permanentemente</button>
+            </ion-item-options>
+            <ion-item-options side="right">
+              <button ion-button color="secondary" expandable (click)="restaurarPrestamo(prest, i)">
+                <ion-icon name="undo"></ion-icon>Restaurar</button>
+            </ion-item-options>
+          </ion-item-sliding>
+          <ion-card class="tarjeta" style="margin: 0px; width: 100%" *ngIf="prestamoProvider.prestamosCerradosEliminados.length == 0" no-padding>
+
+            <ion-card-content >
+              <ion-item class="transparentar">
+                <br>
+                <p class="nombreCliente" text-wrap text-center>¡ No hay ningun Prestamo Cerrado Eliminado !</p>
+              </ion-item>
+
+            </ion-card-content>
+          </ion-card>
+        </ion-list>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

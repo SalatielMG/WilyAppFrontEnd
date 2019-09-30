@@ -1,0 +1,294 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title class="medidaTitulo" style="padding-left: 50px;
+    padding-right: 50px;">Detalles Prestamo</ion-title>
+    <ion-item end class="transparentar" no-lines *ngIf="abonoProvider.esActivoGral == 1">
+      <ion-toggle [(ngModel)]="abonoProvider.cerrarPrestamoGral"></ion-toggle>
+    </ion-item>
+  </ion-navbar>
+  <cardprestamo [contentCliente]="cntCliente" [contentPrestamo]="cntPrestamo">
+
+  </cardprestamo>
+</ion-header>
+
+<ion-content>
+  <ion-card class="tarjeta" style="margin-bottom: 20px;">
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem" >
+          <ion-thumbnail style="margin: 8px 0px 8px 0;" item-start>
+            <img *ngIf="prestamo.sexo==1" src="assets/imgs/H.png" />
+            <img *ngIf="prestamo.sexo==0" src="assets/imgs/M.png" />
+          </ion-thumbnail>
+          <ion-row no-padding>
+            <p class="tituloCard">{{prestamo.nombreCliente}}</p>
+          </ion-row>
+          <button ion-button clear small icon-only (click)="eventoBtn(true)" item-right>
+            <ion-icon color="light" [name]="prestamoProvider.iconCntCliente" ></ion-icon>
+          </button>
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+    <ion-card-content #cntCliente class="tarjetaCuerpo">
+      <ion-list class="tam">
+
+        <!--ion-item class="bordeRedondo">
+          <ion-icon name="person" item-start></ion-icon>
+          <ion-label stacked><strong>Nombre:</strong></ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.nombreCliente"></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item-->
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="person" item-start></ion-icon>
+          <ion-label stacked>Dirección:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.direccion" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="call" item-start></ion-icon>
+          <ion-label stacked>Telefono:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.telefono"></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="tarjeta" style="margin-bottom: 20px">
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem">
+          <ion-thumbnail style="margin: 8px 0px 8px 0;" item-start>
+            <img *ngIf="prestamoProvider.prestamo == 1" src="assets/imgs/prestamoA.png" />
+            <img *ngIf="prestamoProvider.prestamo == 2" src="assets/imgs/prestamoC.png" />
+          </ion-thumbnail>
+          <ion-row no-padding>
+            <p class="tituloCard">Prestamo {{titulo}}</p>
+          </ion-row>
+          <button ion-button clear small icon-only (click)="eventoBtn()" item-right>
+            <ion-icon color="light" [name]="prestamoProvider.iconCntPrestamo" ></ion-icon>
+          </button>
+        </ion-item>
+      </ion-list>
+
+    </ion-card-header>
+    <ion-card-content #cntPrestamo class="tarjetaCuerpo">
+
+      <ion-list class="tam">
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="calendar" item-start></ion-icon>
+          <ion-label stacked>Fecha de prestamo:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.fecha | date:'dd MMMM yyyy'" ></ion-input>
+          <!--ion-datetime type="text" disabled = "true" displayFormat="DDDD DD de MMMM de YYYY" pickerFormat="DDDD MMMM YYYY" [(ngModel)]="prestamo.fecha" ></ion-datetime-->
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label stacked>Capital Prestado:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.cantidad | currency" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo" *ngIf="verificarnumAbonoActivo()">
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label stacked>Capital Actual:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.capitalgralRestante | currency" style="font-weight: bold"></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="analytics" item-start></ion-icon>
+          <ion-label stacked>Interes:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.porcentaje | percent" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="bookmarks" item-start></ion-icon>
+          <ion-label stacked>Bien:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.nombreBien" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="information-circle" item-start></ion-icon>
+          <ion-label stacked>Descripción del bien:</ion-label>
+          <ion-textarea type="text" readonly="true" [value]="prestamo.estado_bien" ></ion-textarea>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo" *ngIf="abonoProvider.esActivoGral == 1">
+          <ion-icon name="calendar" item-start></ion-icon>
+          <ion-label stacked>Proximo Pago:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.fechaProximaGral | date:'dd MMMM yyyy'" style="font-weight: bold"></ion-input>
+          <!--ion-datetime type="text" disabled = "true" displayFormat="DDDD DD de MMMM de YYYY" pickerFormat="DDDD MMMM YYYY" [(ngModel)]="abonoProvider.fechaProximaGral" ></ion-datetime-->
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+      </ion-list>
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card class="tarjeta" style="margin: 0px; width: 100%">
+
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem">
+          <ion-thumbnail style="margin: 5px 0px -4px -16px;" item-start>
+            <img src="assets/imgs/pay3.png" style="width: 126px; height: 95px;"/>
+          </ion-thumbnail>
+              <!--p class="tituloCard" style="width: calc(100% - 75px);">Pagos realizados</p-->
+          <ion-label><strong>Pagos</strong></ion-label>
+              <ion-checkbox [(ngModel)]="abonoProvider.anuladosGral" (ngModelChange)="updateTempAbono()" item-end></ion-checkbox>
+              <ion-label style="margin-left: 0px; max-width: 70px; color: #ff8a00">Anulados</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+
+    <ion-card-content *ngIf="abonoProvider.tempAbonosGral.length == 0">
+      <ion-item class="transparentar">
+        <br>
+        <p class="nombreCliente">¡ No se han realizado ningun pago !</p>
+      </ion-item>
+
+    </ion-card-content>
+  </ion-card>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)" (ionPull)="doPulling($event)" *ngIf="abonoProvider.esActivoGral == 1">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Jale para Actualizar..."
+      refreshingSpinner="circles"
+      refreshingText="Actualizando lista de Abonos">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item-sliding  *ngFor="let abono of abonoProvider.tempAbonosGral; let i=index">
+
+      <ion-item #itemContenido [id]="abono.status" >
+        <ion-thumbnail item-start>
+          <img src="assets/imgs/pay4.png" />
+        </ion-thumbnail>
+        <ion-row no-padding text-center>
+          <ion-col col-11 text-left no-padding>
+            <p class="nombreCliente">{{abono.fechaAbono| date:"dd MMMM yyyy"}}</p>
+          </ion-col>
+          <ion-col col-1 text-right no-padding>
+            <ion-icon *ngIf="abono.nota.length > 0" name="chatbubbles" text-right style="color: #ffdc00"></ion-icon>
+          </ion-col>
+        </ion-row>
+        <ion-row no-padding>
+          <ion-col col-5 >
+            <p class="descripcion">Abono a capital:</p>
+            <p class="descripcion">Abono a interes: </p>
+            <p class="descripcion">Cargo o mora: </p>
+            <p class="descripcion"><strong>Total pagado:</strong></p>
+            <br>
+            <p class="descripcion"><strong>Capital restante:</strong></p>
+          </ion-col>
+           <ion-col col-7 text-right>
+             <p class="descripcion">{{abono.abonoCapital | currency}}</p>
+             <p class="descripcion">{{abono.abonoInteres | currency}}</p>
+             <p class="descripcion">{{abono.mora | currency}}</p>
+             <p class="descripcion"><strong>{{abono.totalPagado | currency}}</strong></p>
+             <br>
+             <p class="descripcion" style="color: green"><strong>{{abono.capitalRestante | currency}}</strong></p>
+           </ion-col>
+        </ion-row>
+      </ion-item>
+
+      <ion-item-options side="left" *ngIf="abonoProvider.esActivoGral == 1 && abono.status == 0">
+        <button ion-button color="danger-light" expandable (click)="eliminarPermanentementePago(abono.idAbono)">
+          <ion-icon name="trash"></ion-icon>
+          Eliminar permanentemente
+        </button>
+      </ion-item-options>
+      <ion-item-options side="right" *ngIf="abonoProvider.esActivoGral == 1 && i == (abonoProvider.tempAbonosGral.length - 1) && abono.status == 0 && verificarpenultimoAbonoEliminado()">
+        <button ion-button color="secondary" expandable (click)="restaurarPago(abono.idAbono)">
+          <ion-icon name="undo"></ion-icon>
+          Restaurar pago
+        </button>
+      </ion-item-options>
+      <ion-item-options side="left" *ngIf="abonoProvider.esActivoGral == 1 && i == (abonoProvider.tempAbonosGral.length - 1) && abono.status == 1">
+      <button ion-button color="danger-light" expandable (click)="anularPago(abono.idAbono)">
+        <ion-icon name="trash"></ion-icon>
+        Anular pago
+      </button>
+      </ion-item-options>
+      <ion-item-options side="right" *ngIf="abonoProvider.esActivoGral == 1 && i == (abonoProvider.tempAbonosGral.length-1) && abono.status == 1">
+        <button ion-button color="secondary" expandable (click)="prestamoProvider.util.abrirModalAbono({esGral: true, opcion: 2, prest: prestamo, abonoP: abono})">
+          <ion-icon name="archive"></ion-icon>
+          Editar pago
+        </button>
+      </ion-item-options>
+
+    </ion-item-sliding>
+
+    <div *ngIf="verificarnumAbonoActivo();" >
+      <ion-item-divider style="font-size: medium; text-align: center; color: #ffffff;" class="tran-item-divider personalizado">
+        Total General Pagado
+      </ion-item-divider>
+      <ion-item-group>
+        <ion-item no-lines>
+          <ion-icon name="cash" item-start class="color-icon"></ion-icon>
+          <ion-label fixed class="label-tamaño">Abonos a capital:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.abonosCapital|currency" item-end text-right class="input-textoP"> </ion-input>
+        </ion-item>
+        <ion-item no-lines>
+          <ion-icon name="cash" item-start class="color-icon"></ion-icon>
+          <ion-label fixed class="label-tamaño">Abonos a interes:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.abonosInteres|currency" item-end text-right class="input-textoP"></ion-input>
+        </ion-item>
+        <ion-item >
+          <ion-icon name="cash" item-start class="color-icon"></ion-icon>
+          <ion-label fixed class="label-tamaño">Cargos o Moras:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.abonosMora|currency" item-end text-right  class="input-textoP"></ion-input>
+        </ion-item>
+        <ion-item >
+          <ion-icon name="cash" item-start class="color-icon" style="color: #005DFF;"></ion-icon>
+          <ion-label fixed class="label-tamaño"><strong>Total:</strong></ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.totalgral_Pagado|currency" item-end text-right  style="font-weight: bold;" class="input-textoP"></ion-input>
+        </ion-item>
+      </ion-item-group>
+
+      <ion-item-divider style="font-size: medium; text-align: center; color: #ffffff;" class="tran-item-divider personalizado">
+        Capital Restante
+      </ion-item-divider>
+      <ion-item-group>
+        <ion-item no-lines>
+          <ion-icon name="cash" item-start class="color-icon"></ion-icon>
+          <ion-label fixed class="label-tamaño">Capital prestado:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.cantidadPrestado|currency" item-end text-right class="input-textoP"> </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="cash" item-start class="color-icon"></ion-icon>
+          <ion-label fixed class="label-tamaño">Abonos a capital:</ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.abonosCapital|currency" item-end text-right  class="input-textoP"></ion-input>
+        </ion-item>
+        <ion-item >
+          <ion-icon name="cash" item-start class="color-icon" style="color: #00ab0e;"></ion-icon>
+          <ion-label fixed class="label-tamaño"><strong>Total:</strong></ion-label>
+          <ion-input type="text" readonly="true" [value]="abonoProvider.totalGral.capitalgralRestante|currency" item-end text-right  style="font-weight: bold; color: #00ab0e;" class="input-textoP"></ion-input>
+        </ion-item>
+      </ion-item-group>
+    </div>
+
+ </ion-list>
+<br><br><br><br>
+  <ion-fab right bottom *ngIf="abonoProvider.esActivoGral == 1">
+    <button ion-fab class="btnAbonoFab"><ion-icon name="arrow-dropup" color="light"></ion-icon></button>
+    <ion-fab-list side="top">
+      <button ion-fab class="btnAbonoFabAdd" [disabled]="abonoProvider.cerrarPrestamoGral" (click)="abonoProvider.util.abrirModalAbono({esGral: true, opcion: 1, prest: this.prestamo})"><ion-icon name="add" ></ion-icon></button>
+      <button ion-fab class="btnAbonoFabClose" *ngIf="abonoProvider.cerrarPrestamoGral" (click)="cerrarPrestamoA()"><ion-icon name="checkmark-circle" color="light"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+
+</ion-content>

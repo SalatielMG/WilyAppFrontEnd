@@ -1,0 +1,251 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Ajustar Pago</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">Cerrar</button>
+    </ion-buttons>
+  </ion-navbar>
+  <expandable-header [scrollArea]="myContent" headerHeight="200">
+    <div class="bg-img-pay">
+      <img src="assets/imgs/pay3.png" class="dp-img-pay"/>
+    </div>
+  </expandable-header>
+</ion-header>
+
+
+<ion-content fullscreen #myContent>
+  <form [formGroup]="myForm" (ngSubmit)="saveData()">
+  <ion-card class="tarjeta" style="margin: 2px 0px 5px 0px;
+    width: 100%; background-color: white; padding: 0px">
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem" >
+          <!--strong>Resumen Pagos</strong-->
+          <ion-row no-padding style="margin-bottom: 10px" text-center>
+            <p class="tituloCard" style="width: 100%">Resumen Pagos</p>
+          </ion-row>
+          <ion-row no-padding text-center>
+            <p class="tituloCard" style="width: 100%">a {{pagoProvider.util.obtFechaActual() | date:'dd MMMM yyyy'}}</p>
+          </ion-row>
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+    <ion-card-content class="tarjetaCuerpo">
+      <ion-list class="tam" >
+        <div *ngIf="ultimoPago.mes != 0">
+          <ion-item class="bordeRedondos" no-padding no-margin>
+            <ion-icon name="calendar" item-start></ion-icon>
+            <ion-label stacked><strong>Ultimo mes pagado:</strong></ion-label>
+            <ion-input type="text" readonly="true" [value]="ultimoPago.mes"></ion-input>
+            <ion-badge item-end [color]="(ultimoPago.esAbierto == 0) ? 'secondary': 'danger-light'">{{(ultimoPago.esAbierto == 0) ? "Cerrado": "Abierto"}}</ion-badge>
+          </ion-item>
+          <ion-item class="bordeRedondos" no-padding no-margin>
+            <ion-icon name="calendar" item-start></ion-icon>
+            <ion-label floating class="delgado-fuerte">Periodo:</ion-label>
+            <ion-textarea type="text" readonly="true" [value]="pagoProvider.util.periodoFechas(ultimoPago.fechaInicial, ultimoPago.fechaFinal)" ></ion-textarea>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+        </div>
+
+        <ion-item class="bordeRedondos" no-padding no-margin>
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label stacked>{{(ultimoPago.mes == 0) ? "Capital Prestado": "Capital Restante"}}</ion-label>
+          <ion-input type="text" readonly="true" [value]="total.capitalRestante | currency"></ion-input>
+          <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+        </ion-item>
+
+        <ion-item class="bordeRedondos" no-padding no-margin>
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label stacked ><strong>Interes Restante:</strong></ion-label>
+          <ion-input type="text" readonly="true" [value]="total.interesRestante | currency"></ion-input>
+          <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+        </ion-item>
+
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="tarjeta transparentar" style="margin: 2px 0px 5px 0px;
+    width: 100%; padding: 0px">
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem" >
+          <strong>Monto a pagar</strong>
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+    <ion-card-content class="tarjetaCuerpo">
+
+      <ion-list no-padding>
+        <ion-item-divider class="tran-item-divider" style="background-color: transparent;">
+          FORMULARIO DE PAGO
+        </ion-item-divider>
+        <ion-item no-padding no-margin class="transparentar">
+          <ion-icon name="calendar" item-start></ion-icon>
+          <ion-label floating>Fecha:</ion-label>
+          <ion-datetime formControlName="fechaPagar" doneText="Aceptar" cancelText="Cancelar" displayFormat="DDDD DD de MMMM de YYYY" pickerFormat="DDDD MMMM YYYY" [min]="(ultimoPago.mes == 0) ? total.fechaInicial: (ultimoPago.esAbierto == 1) ?ultimoPago.fechaInicial:ultimoPago.fechaFinal" [max]="pagoProvider.util.obtFechaActual()" (ionChange) = "calcularIntGenFP()"></ion-datetime>
+        </ion-item>
+
+        <ion-item no-padding no-margin class="transparentar">
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label floating >Cantidad a pagar:</ion-label>
+          <ion-input formControlName="cantidadPagar" type="number" (ngModelChange)="actualizarCampos($event)"></ion-input>
+          <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+        </ion-item>
+
+        <ion-item no-padding no-margin class="transparentar">
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label floating >Nota:</ion-label>
+          <ion-textarea formControlName="notaPagar"></ion-textarea>
+          <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+        </ion-item>
+
+        <ion-item-divider class="tran-item-divider" style="background-color: transparent">
+          TOTALES
+        </ion-item-divider>
+        <ion-item-group class="transparentar">
+          <ion-item no-padding no-margin class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label fixed class="label-tamaño delgado">Interes Acumulado:</ion-label>
+            <ion-input type="text" readonly="true" [value]="total.interesAcumulado | currency" text-right class="delgado"></ion-input>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+          <ion-item no-padding no-margin class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label fixed class="label-tamaño delgado">Abono a Interes:</ion-label>
+            <ion-input type="text" readonly="true" [value]="abonoInteres | currency" text-right class="delgado"></ion-input>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+          <ion-item no-padding no-margin class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label fixed class="label-tamaño delgado"><strong>Interes restante:</strong></ion-label>
+            <ion-input type="text" readonly="true" [value]="interesRestante | currency" text-right class="fuerte"></ion-input>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+        </ion-item-group>
+        <ion-item-group class="transparentar">
+          <ion-item no-padding no-margin class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label fixed class="label-tamaño delgado">Capital Prestado</ion-label>
+            <ion-input type="text" readonly="true" [value]="total.capitalPrestado | currency" text-right class="delgado"></ion-input>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+          <ion-item no-padding no-margin class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label fixed class="label-tamaño delgado">Abono a capital:</ion-label>
+            <ion-input type="text" readonly="true" [value]="abonoCapital | currency" text-right class="delgado"></ion-input>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+          <ion-item no-padding no-margin class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label fixed class="label-tamaño delgado"><strong>Capital restante:</strong></ion-label>
+            <ion-input type="text" readonly="true" [value]="capitalRestante | currency" text-right class="fuerte"></ion-input>
+            <!--ion-icon name="arrow-dropright" item-end></ion-icon-->
+          </ion-item>
+        </ion-item-group>
+
+      </ion-list>
+
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-card class="tarjeta" style="margin: 2px 0px 5px 0px; width: 100%; background-color: white; padding: 0px">
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem" >
+          <strong>Ajustar pago en meses </strong>
+          <button ion-button clear small icon-only (click)="eventoBtn()" type="button" item-right>
+            <ion-icon color="light" [name]="(pagoProvider.ajustar) ? 'arrow-dropdown':'arrow-dropright'" ></ion-icon>
+          </button>
+          <!--ion-toggle item-end (toggle)="Holi($event)"></ion-toggle-->
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+
+    <ion-card-content class="tarjetaCuerpo" style="background-color: transparent; margin: 0px; padding: 0px;">
+      <ion-list *ngIf="pagoProvider.pagosAjustados.length != 0">
+        <ion-card class="tarjeta card-pago" *ngFor="let pago of pagoProvider.pagosAjustados; let i=index">
+          <ion-card-header class="tarjetaEncabezado header-tarjetaPago" [ngClass]="(pago.prestamo.status == 0) ? 'abonoAnulado': 'pagoNormal'">
+            <ion-item-sliding class="transparentar">
+              <ion-item [ngClass]="(pago.prestamo.status == 0) ? 'abonoAnulado': 'pagoNormal'" no-padding>
+                <ion-row no-padding text-center>
+                  <ion-col col-4>
+                    <ion-thumbnail item-start style="margin: 0px; padding-left: 10px;" no-margin no-padding>
+                      <img  *ngIf="pago.prestamo.esAbierto == 1" src="assets/imgs/pagoA.png" />
+                      <img  *ngIf="pago.prestamo.esAbierto == 0" src="assets/imgs/pagoC.png" />
+                    </ion-thumbnail>
+                  </ion-col>
+                  <ion-col col-7 text-left>
+                    <p [ngClass]="(pago.prestamo.esAbierto == 0) ? 'cerrado': 'abierto'" style="margin-bottom: -5px">{{pago.prestamo.mes}}° MES</p>
+                    <p class="descripcion" style="margin-top: 5px; margin-bottom: 10px;"><small>({{pago.prestamo.periodo}})</small></p>
+                    <p class="descripcion">Fecha de corte:</p>
+                    <p class="descripcion delgado">{{fechaCorte(pago.prestamo.fecha)}}</p>
+                  </ion-col>
+                  <ion-col  col-1  align-items-end>
+                    <ion-icon name="pricetags" item-right [ngClass]="(pago.prestamo.esAbierto == 0) ? 'verde': 'rojo'" style="margin-top: 0px;"></ion-icon>
+                    <button ion-button clear block icon-only item-right style="margin: 0px;" type="button" >
+                      <ion-icon color="dark" name="arrow-forward"></ion-icon>
+                      <!--ion-icon color="dark" name="arrow-down" *ngIf="pago.prestamo.abierto == 1"></ion-icon-->
+                    </button>
+                  </ion-col>
+                </ion-row>
+              </ion-item>
+            </ion-item-sliding>
+            <div [ngClass]="(pago.prestamo.status == 0) ? 'abonoAnulado': 'pagoNormal'" >
+              <ion-item-divider class="transparentar" style="padding-left: 8px;padding-right: 0px;">
+                <ion-row >
+                  <ion-col text-left>
+                    <p class="descripcion delgado">Abono a interes:</p>
+                    <p class="descripcion delgado" style="padding-bottom: 5px">Abono a capital:</p>
+                    <p class="descripcion delgado-fuerte">Total pagado:</p>
+                    <br>
+                    <p class="descripcion delgado">Capital actual:</p>
+                    <p class="descripcion delgado" style="padding-bottom: 5px">Abono a capital:</p>
+                    <p class="descripcion delgado-fuerte">Capital restante:</p>
+                    <br>
+                    <p class="descripcion delgado cursiva">Interes Generado:</p>
+                    <p class="descripcion delgado cursiva" style="padding-bottom: 3px">Int. Rest. Mes Ant.:</p>
+                    <p class="descripcion ">Interes Acumulado:</p>
+
+                    <p class="descripcion delgado" style="padding-bottom: 5px">Abono a Interes:</p>
+                    <p class="descripcion delgado-fuerte">Interes restante:</p>
+                  </ion-col>
+                  <ion-col text-right>
+                    <p class="descripcion delgado">{{pago.prestamo.abonoInteres | currency}}</p>
+                    <p class="descripcion delgado" style="padding-bottom: 5px">{{pago.prestamo.abonoCapital | currency}}</p>
+                    <!--p class="descripcion delgado-fuerte">{{pago.totalPagado | currency}}</p-->
+                    <ion-badge color="blue-gray" style="margin-right: -8px;">{{pago.totalPagado | currency}}</ion-badge>
+                    <br>
+                    <br>
+                    <p class="descripcion delgado">{{pago.prestamo.capitalActual | currency}}</p>
+                    <p class="descripcion delgado" style="padding-bottom: 5px">{{pago.prestamo.abonoCapital | currency}}</p>
+                    <!--p class="descripcion delgado-fuerte">{{pago.capitalRestante | currency}}</p-->
+                    <ion-badge [color] = "(pago.capitalRestante == 0)? 'verde-strong': 'danger-light'" style="margin-right: -8px;">{{pago.capitalRestante | currency}}</ion-badge>
+                    <br><br>
+                    <p class="descripcion delgado cursiva">{{pago.prestamo.interesGenerado | currency}}</p>
+                    <p class="descripcion delgado cursiva" style="padding-bottom: 3px">{{pago.prestamo.interesRestMesAnt | currency}}</p>
+                    <p class="descripcion ">{{pago.interesAcumulado | currency}}</p>
+
+                    <p class="descripcion delgado" style="padding-bottom: 5px">{{pago.prestamo.abonoInteres| currency}}</p>
+                    <!--p class="descripcion delgado-fuerte">{{pago.interesRestante | currency}}</p-->
+                    <ion-badge [color] = "(pago.interesRestante == 0)? 'verde-strong': 'danger-light'" style="margin-right: -8px;">{{pago.interesRestante | currency}}</ion-badge>
+                  </ion-col>
+                </ion-row>
+              </ion-item-divider>
+            </div>
+          </ion-card-header>
+
+        </ion-card>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+    <div padding>
+      <button ion-button block type="submit" color="secondary" [disabled]="!myForm.valid">Abonar</button>
+    </div>
+  </form>
+
+</ion-content>

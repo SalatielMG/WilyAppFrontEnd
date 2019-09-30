@@ -1,0 +1,36 @@
+.ios,.md{
+  page-cliente {
+
+    /*ion-content{
+      @include linear-gradient(left,$facebook-messenger);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+    }*/
+    .item {
+      padding-left: 16px;
+      padding-right: 0;
+      position: relative;
+      font-size: 1.6rem;
+      font-weight: normal;
+      text-transform: none;
+      color: black;
+      background-color: white;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      -webkit-transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    ion-list ion-item {
+      color:red;
+      background-color: transparent;// #ecf0f1
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    ion-list ion-list-header{
+      background-color: transparent;
+    }
+
+  }
+}
+

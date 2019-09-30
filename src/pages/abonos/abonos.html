@@ -1,0 +1,174 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title class="medidaTitulo">{{titulo}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()">Cerrar</button>
+    </ion-buttons>
+  </ion-navbar>
+  <expandable-header [scrollArea]="myContent" headerHeight="200">
+    <div class="bg-img-pay">
+      <img src="assets/imgs/pay3.png" class="dp-img-pay"/>
+    </div>
+  </expandable-header>
+  <card-abono [contentPrestamoAbono]="cntPrestamoAbono"></card-abono>
+</ion-header>
+
+<ion-content fullscreen #myContent>
+
+  <ion-card class="tarjeta" style="margin: 2px 0px 5px 0px;
+    width: 100%; background-color: white; padding: 0px">
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem" >
+          <strong>Resumen del prestamo </strong>
+          <button ion-button clear small icon-only (click)="eventoBtn()" item-right>
+            <ion-icon color="light" [name]="prestamoProvider.iconCntPrestamoAbono" ></ion-icon>
+          </button>
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+    <ion-card-content #cntPrestamoAbono class="tarjetaCuerpo">
+      <ion-list class="tam">
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="calendar" item-start></ion-icon>
+          <ion-label stacked>Fecha de prestamo:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.fecha | date:'dd MMMM yyyy'" ></ion-input>
+          <!--ion-datetime type="text" disabled = "true" displayFormat="DDDD DD de MMMM de YYYY" pickerFormat="DDDD MMMM YYYY" [(ngModel)]="prestamo.fecha" ></ion-datetime-->
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label stacked>Capital Prestado:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.cantidad | currency" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo" *ngIf="tamArregloAbonos > 0"><!--PENDIENTE-->
+          <ion-icon name="cash" item-start></ion-icon>
+          <ion-label stacked>Capital Actual:</ion-label>
+          <ion-input type="text" readonly="true" [value]="capActual | currency" style="font-weight: bold"></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="analytics" item-start></ion-icon>
+          <ion-label stacked>Interes:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.porcentaje | percent" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="bookmarks" item-start></ion-icon>
+          <ion-label stacked>Bien:</ion-label>
+          <ion-input type="text" readonly="true" [value]="prestamo.nombreBien" ></ion-input>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo">
+          <ion-icon name="information-circle" item-start></ion-icon>
+          <ion-label stacked>Descripción del bien:</ion-label>
+          <ion-textarea type="text" readonly="true" [value]="prestamo.estado_bien" ></ion-textarea>
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+        <ion-item class="bordeRedondo"><!--PENDIENTE-->
+          <ion-icon name="calendar" item-start></ion-icon>
+          <ion-label stacked>Proximo Pago:</ion-label>
+          <ion-input type="text" readonly="true" [value]="fechaTempProxPago | date:'dd MMMM yyyy'" style="font-weight: bold"></ion-input>
+          <!--ion-datetime type="text" disabled = "true" displayFormat="DDDD DD de MMMM de YYYY" pickerFormat="DDDD MMMM YYYY" [(ngModel)]="abonoProvider.fechaProximaGral" ></ion-datetime-->
+          <ion-icon name="arrow-dropright" item-end></ion-icon>
+        </ion-item>
+
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="tarjeta" style="margin: 2px 0px 5px 0px;
+    width: 100%;">
+
+    <ion-card-header class="tarjetaEncabezado">
+      <ion-list no-padding>
+        <ion-item class="encabezadoCardItem">
+          <strong>Agregar Pago</strong>
+        </ion-item>
+      </ion-list>
+    </ion-card-header>
+    <ion-card-content class="tarjetaCuerpo">
+      <ion-list>
+        <ion-item-divider class="tran-item-divider">
+          HABILITAR CAMPOS
+        </ion-item-divider>
+        <ion-item-group>
+          <ion-item class="transparentar">
+            <ion-icon [name]="nameInteres" item-start></ion-icon>
+            <ion-label>Abonar Interes</ion-label>
+            <ion-toggle [(ngModel)]="esActivoInteres" (ngModelChange)="switchInteres($event)"></ion-toggle>
+          </ion-item>
+          <ion-item class="transparentar">
+            <ion-icon [name]="nameMora" item-start></ion-icon>
+            <ion-label>Cargos o Mora</ion-label>
+            <ion-toggle [(ngModel)]="esActivoMora" (ngModelChange)="switchMora($event)"></ion-toggle>
+          </ion-item>
+        </ion-item-group>
+      </ion-list>
+      <form [formGroup]="myForm" (ngSubmit)="saveData()">
+        <ion-list >
+          <ion-item-divider class="tran-item-divider">
+            MONTO A PAGAR
+          </ion-item-divider>
+          <ion-item class="transparentar">
+            <ion-icon name="calendar" item-start></ion-icon>
+            <ion-label floating>Fecha de pago:</ion-label>
+            <ion-datetime formControlName="fecha" doneText="Aceptar" cancelText="Cancelar" displayFormat="DDDD DD de MMMM de YYYY" pickerFormat="DDDD MMMM YYYY" [min]="fechaInput" max="2200" (ngModelChange)="prueba($event)"></ion-datetime>
+          </ion-item>
+          <ion-item class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label floating>Abono a Capital:</ion-label>
+            <ion-input formControlName="abono" type="number"  (ngModelChange)="actualizarTotalPagar($event, 1)" ></ion-input>
+          </ion-item>
+
+          <ion-item class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label floating>Interes acumulado:</ion-label>
+            <ion-input formControlName="interes" type="number" (ngModelChange)="actualizarTotalPagar($event, 2)" [disabled]="!esActivoInteres" ></ion-input>
+            <ion-badge color="danger" item-end >{{msjInteres}}</ion-badge>
+          </ion-item>
+          <ion-item class="transparentar">
+            <ion-icon name="cash" item-start></ion-icon>
+            <ion-label floating>Cargos/Mora:</ion-label>
+            <ion-input formControlName="mora" type="number" (ngModelChange)="actualizarTotalPagar($event, 3)" [disabled]="!esActivoMora" ></ion-input>
+            <ion-badge color="danger" item-end >{{msjMora}}</ion-badge>
+          </ion-item>
+
+          <ion-item class="transparentar">
+            <ion-icon name="information-circle" item-start></ion-icon>
+            <ion-label floating>Nota:</ion-label>
+            <ion-textarea formControlName="nota"  ></ion-textarea>
+          </ion-item>
+
+          <ion-item-divider class="tran-item-divider">
+            TOTAL
+          </ion-item-divider>
+          <ion-item-group>
+            <ion-item class="transparentar">
+              <ion-icon name="cash" item-start class="color-icon" ></ion-icon>
+              <ion-label fixed class="label-tamaño" style="font-weight: bold; min-width: 120px; margin-right: 0px">Total a pagar:</ion-label>
+              <ion-input class="input-textoP" formControlName="totalPagar" type="text" readonly="true" [value]="Total|currency" text-right style="font-weight: bold; color: red; margin-right: 0px; margin-left: 0px;"> </ion-input>
+            </ion-item>
+            <ion-item class="transparentar" >
+              <ion-icon name="cash" item-start style="color: #006e0e;" ></ion-icon>
+              <ion-label fixed class="label-tamaño" style="font-weight: bold; min-width: 120px; margin-right: 0px">Capital restante:</ion-label>
+              <ion-input formControlName="capitalRestante" type="text" readonly="true"[value]="CapRestante|currency" text-right style="font-weight: bold; color: #006e0e; margin-right: 0px; margin-left: 0px;"></ion-input>
+            </ion-item>
+          </ion-item-group>
+        </ion-list>
+        <div padding>
+          <button ion-button block type="submit" color="secondary" [disabled]="!myForm.valid">Abonar</button>
+        </div>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

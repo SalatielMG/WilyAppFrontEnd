@@ -1,0 +1,109 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+// Font path is used to include ionicons,
+// roboto, and noto sans fonts
+$font-path: "../assets/fonts";
+
+
+// The app direction is used to include
+// rtl styles in your app. For more info, please see:
+// http://ionicframework.com/docs/theming/rtl-support/
+$app-direction: ltr;
+
+
+@import "ionic.globals";
+@import './gradient-mixins';
+
+// Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass variables found in Ionic's source scss files.
+// To view all the possible Ionic variables, see:
+// http://ionicframework.com/docs/theming/overriding-ionic-variables/
+
+
+
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+
+$colors: (
+  blue-strong:#283c86,
+  blue-gray: rgb(0, 93, 255),
+  blue-fb:    #0072ff,
+  primary:    rgb(0, 93, 255),//#488aff,
+  blue-skyes: #2f80ed,
+  green-lg:   #24fe41,//#66ff00,
+  secondary: #08fe00,//#32db64
+  verde-strong: #009907,
+  danger:     #f53d3d,
+  danger-light:#f00000,
+  amarillo: #ffde00,
+  orange:     #ff512f,
+  light:      #f4f4f4,
+  blanco-ligth : #ffffff,
+  dark:       #222222
+);
+
+// Shared Variables
+// --------------------------------------------------
+
+$text-color:         white !default;
+$link-color:         color($colors, light) !default;
+$toolbar-background: transparent !default;
+// App iOS Variables
+// --------------------------------------------------
+// iOS only Sass variables can go here
+$segment-button-ios-background-color-activated: color($colors, danger-light);
+$segment-button-ios-font-size:	2.0rem;//1.3
+$segment-button-ios-toolbar-button-max-width: 100%;
+
+
+// App Material Design Variables
+// --------------------------------------------------
+// Material Design only Sass variables can go here
+$searchbar-md-input-background-color: rgba(0, 0, 0, 0.08);
+$searchbar-md-input-text-color:color($colors, light);
+$segment-button-md-border-color-activated: color($colors, danger-light);
+//$popover-md-background: color($colors, dark);
+$popover-md-text-color: color($colors, dark);
+
+
+//$segment-button-md-text-color-activated: color($colors, dark);
+// App Windows Variables
+// --------------------------------------------------
+// Windows only Sass variables can go here
+
+
+
+
+// App Theme
+// --------------------------------------------------
+// Ionic apps can have different themes applied, which can
+// then be future customized. This import comes last
+// so that the above variables are used and Ionic's
+// default are overridden.
+
+@import "ionic.theme.default";
+@import "./green-and-blue-theme";
+@import "./facebook-messenger-theme";
+
+// Ionicons
+// --------------------------------------------------
+// The premium icon font for Ionic. For more info, please see:
+// http://ionicframework.com/docs/ionicons/
+
+@import "ionic.ionicons";
+
+
+// Fonts
+// --------------------------------------------------
+
+@import "roboto";//Segoe UI Historic
+@import "noto-sans";
